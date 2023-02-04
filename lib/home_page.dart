@@ -73,89 +73,104 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          height: MediaQuery.of(context).size.height * 0.7,
-          width: MediaQuery.of(context).size.width * 0.8,
-          decoration: BoxDecoration(
-              color: Colors.blue[200], borderRadius: BorderRadius.circular(15)),
-          child: Column(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    widget.textWidget == true
-                        ? Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 5),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12)),
-                            child: TextField(
-                              controller: textController,
-                              decoration: InputDecoration(
-                                  hintText: "Enter Text",
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none),
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(20),
+            height: MediaQuery.of(context).size.height * 0.7,
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: BoxDecoration(
+                color: Colors.blue[200],
+                borderRadius: BorderRadius.circular(15)),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      widget.textWidget == true
+                          ? Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: TextField(
+                                controller: textController,
+                                decoration: InputDecoration(
+                                    hintText: "Enter Text",
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none),
+                              ),
+                            )
+                          : Container(),
+                      image == null
+                          ? SizedBox(
+                              height: 20,
+                            )
+                          : Container(
+                              margin: EdgeInsets.all(20),
+                              width: 300,
+                              height: 300,
+                              child: Image.file(
+                                image!,
+                                fit: BoxFit.fill,
+                              ),
                             ),
-                          )
-                        : Container(),
-                    image == null
-                        ? SizedBox(
-                            height: 20,
-                          )
-                        : Container(
-                            margin: EdgeInsets.all(20),
-                            width: 300,
-                            height: 300,
-                            child: Image.file(
-                              image!,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                    widget.selectImageWidget == true
-                        ? ElevatedButton(
-                            onPressed: () {
-                              pickImage();
-                            },
-                            child: Text("Pick an Image"))
-                        : Container(),
-                    widget.saveButtonWidget == true
-                        ? ElevatedButton(
-                            onPressed: () {
-                              if (widget.selectImageWidget == false &&
-                                  widget.textWidget == false) {
+                      widget.selectImageWidget == true
+                          ? ElevatedButton(
+                              onPressed: () {
+                                pickImage();
+                              },
+                              child: Text("Pick an Image"))
+                          : Container(),
+                      widget.saveButtonWidget == true
+                          ? ElevatedButton(
+                              onPressed: () {
+                                if (widget.selectImageWidget == false &&
+                                    widget.textWidget == false) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Dialog(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12)),
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 15, vertical: 30),
+                                              child: Text(
+                                                  "Add atleast 1 field to submit"),
+                                            ));
+                                      });
+                                }
                                 showDialog(
                                     context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 30),
-                                            child: Text(
-                                                "Add atleast 1 field to submit"),
-                                          ));
-                                    });
-                              }
-                              uploadImage();
-                            },
-                            child: Text("Submit"))
-                        : Container()
-                  ],
+                                    builder: (context) => Center(
+                                          child: CircularProgressIndicator(),
+                                        ));
+                                uploadImage().whenComplete(() {
+                                  Navigator.pop(context);
+                                  final snackBar = SnackBar(
+                                    duration: Duration(seconds: 6),
+                                    content: Text('Successfully uploaded'),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                });
+                              },
+                              child: Text("Submit"))
+                          : Container()
+                    ],
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddWidgetspage()));
-                  },
-                  child: Text("Add Widgets"))
-            ],
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddWidgetspage()));
+                    },
+                    child: Text("Add Widgets"))
+              ],
+            ),
           ),
         ),
       ),
